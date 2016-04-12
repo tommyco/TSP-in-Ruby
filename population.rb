@@ -19,6 +19,12 @@ class Population
       end
    end
 
+   # size of the population
+   def size
+      @tour_list.length
+   end
+
+   # add a tour into the tour list - avoid duplicates
    def add_tour(newTour)
    	 @tour_list << newTour.to_a unless @tour_list.detect {| tour_elem | tour_elem == newTour }
    end

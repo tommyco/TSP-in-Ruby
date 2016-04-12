@@ -1,6 +1,7 @@
 require_relative "./city"
 require_relative "./tour"
 require_relative "./population"
+require_relative "./ga"
 
 class TSP
 	attr_accessor :tour
@@ -8,57 +9,36 @@ class TSP
 	attr_accessor :optimal_route
 	attr_accessor :optimal_route_distance
 
-	SizeOfPopulation = 20
-	NumberOfGeneration = 1000
+	SizeOfPopulation = 50
+	NumberOfGeneration = 100
 	MutationRate = 0.7
 
 	# cities is an array of [x, y] coordinates
 	def initialize(cities)
+		# define the origin city
+		origin_city = City.new(0, 0)	
+		Tour.set_origin_city(origin_city)	
+
 		# convert cities into an array of City objects to create a tour
 		@tour = Tour.new(cities)
 
-		#puts "Tour distance is #{Tour.tour_distance(@tour.to_a)}"
+        puts "Tour is #{@tour}"
+		puts "Initial Tour Distance = #{Tour.tour_distance(@tour.to_a)}"
 
 		# generate a population based on the current tour
 		@population = Population.new(@tour, SizeOfPopulation)
 
-		@optimal_route_distance = 1000.00
-
 		(0..NumberOfGeneration).each { | gencount |
-			@population.compute_all_distances
-			@population.find_best_tour
-			
-			new_best_distance = @population.best_tour_distance
-			if (new_best_distance < @optimal_route_distance)
-				# found a new best tour
-				@optimal_route = @population.best_tour
-				@optimal_route_distance = new_best_distance
-			end
-
-			# generate a new population using crossover
-			new_pop = Population.new(nil, 0)
-
-			until (new_pop.tour_list.length == SizeOfPopulation) do
-				first_pos = rand(SizeOfPopulation - 1)
-				second_pos = rand(SizeOfPopulation - 1)
-
-				first_tour = @population.tour_list[first_pos]
-				second_tour = @population.tour_list[second_pos]
-
-				cross_tour = @population.crossover(first_tour, second_tour)
-
-				if (rand > MutationRate)
-					cross_tour = Tour.mutate_tour(cross_tour)
-				end
-
-				new_pop.add_tour(cross_tour)
-			end
-
-			# set this as the new population
-			@population = new_pop
+			@population = GA.evolve(@population)
 		}
 
-#		puts "Final best route #{@optimal_route} - best distance #{@optimal_route_distance}"
+		@population.compute_all_distances
+    	@population.find_best_tour
+
+    	@optimal_route = @population.best_tour
+		@optimal_route_distance = @population.best_tour_distance
+
+		puts "Final best route #{@optimal_route} - best distance #{@optimal_route_distance}"
 	end
 
     # return the optimal route found so far
@@ -75,8 +55,8 @@ class TSP
 	end
 end
 
-tsp = TSP.new([[1, 2], [3, 4], [8, 7], [10, 12], [2, 4]])
+# tsp = TSP.new([[1,1], [8,4], [10, 11], [4, 5], [3,3], [5,6], [3,2]])
 
-puts "Best Route: #{tsp.route}"
-puts "Best distance: #{tsp.dist} ==> #{tsp.dist.round(2)}"
+# puts "Best Route: #{tsp.route}"
+# puts "Best distance: #{tsp.dist} ==> #{tsp.dist.round(2)}"
 

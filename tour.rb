@@ -3,10 +3,7 @@ require_relative "./city"
 class Tour
 	attr_accessor :aTour
 
-	# define origin city
-    Origin = City.new(0,0)
-
-	# given a list of cities, construct a new tour
+    # given a list of cities, construct a new tour
 	def initialize(cities)
 		@aTour = []
 		cities.each {|x, y| @aTour << City.new(x, y)}
@@ -27,7 +24,12 @@ class Tour
     	@aTour
     end
 
-	# compute the distance between 2 cities
+    # define the origin city
+    def self.set_origin_city(origin_city)
+        @@origin_city = origin_city
+    end
+
+    # compute the distance between 2 cities
     def self.node_distance(from_city, to_city)
     	xdis = from_city.xpos - to_city.xpos
     	ydis = from_city.ypos - to_city.ypos
@@ -39,13 +41,13 @@ class Tour
     def self.tour_distance(oneTour)
     	tour_length = oneTour.length
     	if tour_length > 0
-    		total = Tour.node_distance(Origin, oneTour[0])
+    		total = Tour.node_distance(@@origin_city, oneTour[0])
     	end
     	(0..(tour_length-2)).each do |n| 
     		total += Tour.node_distance(oneTour[n], oneTour[n+1])
     	end
     	if tour_length > 0
-    		total += Tour.node_distance(oneTour[tour_length - 1], Origin)
+    		total += Tour.node_distance(oneTour[tour_length - 1], @@origin_city)
     	end
     	return total
     end
