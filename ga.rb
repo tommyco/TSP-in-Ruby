@@ -3,7 +3,7 @@ require_relative "./tour"
 require_relative "./population"
 
 class GA
-	MutationRate = 0.7
+	MutationRate = 0.1
 	TournamentSize = 5
 
     def self.evolve(population)

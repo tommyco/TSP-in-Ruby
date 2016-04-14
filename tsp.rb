@@ -11,7 +11,6 @@ class TSP
 
 	SizeOfPopulation = 50
 	NumberOfGeneration = 100
-	MutationRate = 0.7
 
 	# cities is an array of [x, y] coordinates
 	def initialize(cities)
@@ -22,8 +21,8 @@ class TSP
 		# convert cities into an array of City objects to create a tour
 		@tour = Tour.new(cities)
 
-        puts "Tour is #{@tour}"
-		puts "Initial Tour Distance = #{Tour.tour_distance(@tour.to_a)}"
+  		# puts "Tour is #{@tour}"
+		# puts "Initial Tour Distance = #{Tour.tour_distance(@tour.to_a)}"
 
 		# generate a population based on the current tour
 		@population = Population.new(@tour, SizeOfPopulation)
@@ -38,7 +37,7 @@ class TSP
     	@optimal_route = @population.best_tour
 		@optimal_route_distance = @population.best_tour_distance
 
-		puts "Final best route #{@optimal_route} - best distance #{@optimal_route_distance}"
+		# puts "Final best route #{@optimal_route} - best distance #{@optimal_route_distance}"
 	end
 
     # return the optimal route found so far
